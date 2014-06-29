@@ -1,0 +1,8 @@
+bin/
+.bundle/
+iso
+*.box
+packer_cache
+packer_log
+.DS_Store
+http
