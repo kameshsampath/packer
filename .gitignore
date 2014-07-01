@@ -5,4 +5,4 @@ iso
 packer_cache
 packer_log
 .DS_Store
-http
+keys/
