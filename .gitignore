@@ -6,3 +6,6 @@ packer_cache
 packer_log
 .DS_Store
 keys/
+*.log
+rpms/
+*.vdi
