@@ -9,3 +9,9 @@ keys/
 *.log
 rpms/
 *.vdi
+*.lock
+cookbooks
+data_bags
+roles
+.chef
+berks-cookbooks

@@ -1,0 +1,69 @@
+{
+  "builders": [
+    {
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-6.5/ks.cfg<enter><wait>"
+      ],
+      "name": "centos65-java-vbox",
+      "boot_wait": "10s",
+      "disk_size": 8192,
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "RedHat_64",
+      "http_directory": "../http",
+      "iso_url": "{{user `mirror`}}/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso",
+      "iso_checksum":"f9d84907d77df62017944cb23cab66305e94ee6ae6c1126415b81cc5e999bdd0",
+      "iso_checksum_type":"sha256",  
+      "output_directory": "packer-chef-centos-65-x86_64-virtualbox",
+      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "1024"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "1"
+        ]
+      ],
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "centos-65-minimal-chef-java7-amd64"
+    }
+  ],
+  "provisioners":[
+     {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+	  "scripts": [
+	       "../scripts/common/init-machine.sh"
+	  ],
+	  "type": "shell"         
+     },
+     {
+	   "type": "chef-solo",
+	   "cookbook_paths": ["../berks-cookbooks"],
+	   "run_list": ["java"],
+	   "json": {
+			     "java":{
+					"jdk_version":"7"
+			  	 }
+		     }
+     }
+  ],
+  "post-processors": [
+    {
+      "output": "../builds/{{.Provider}}/workspace7-chef-java7-centos65-amd64.box",
+      "type": "vagrant"
+    }
+  ],
+  "variables": {
+    "mirror": "http://mirrors.kernel.org/centos"
+  }
+}
